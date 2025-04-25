@@ -2,7 +2,7 @@ import sys
 import os
 import pygrading as gg
 import re
-import tempfile
+from config import KERNEL_CONFIG
 
 
 def Singleton(cls):
@@ -20,14 +20,7 @@ def Singleton(cls):
 class Env:
     def __init__(self):
         self.is_debug = False
-        self.config = {
-            'submit_dir': '/coursegrader/submit',
-            'testcase_dir': '/coursegrader/testdata',
-            'return_code': 0,
-            "exec_dir": tempfile.mkdtemp(),
-            "source_ext": ".ml",  # OCaml 源文件扩展名
-            "exec_src": os.path.join(tempfile.mkdtemp(), "exec.out")
-        }
+        self.config = KERNEL_CONFIG.copy()
 
     def load_config(self, config_src=None):
         if os.environ.get("CONFIG_SRC"):

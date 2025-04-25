@@ -12,7 +12,10 @@ def prework(job: gg.Job):
         raise CG.CompileError("No submit file")
 
     source_code = os.path.join(config["submit_dir"], "*.ml")
-    compile_cmd = f"ocamlopt -o {config['exec_src']} {source_code}"
+    compile_cmd = config['compile_cmd'].format(
+        exec_src=config['exec_src'],
+        source_dir=source_code
+    )
     compile_result = gg.utils.exec(compile_cmd)
     if compile_result.returncode != 0:
         raise CG.CompileError(compile_result.stdout + '\n' + compile_result.stderr)
