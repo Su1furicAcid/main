@@ -11,6 +11,7 @@ def prework(job: gg.Job):
     if len(os.listdir(config['submit_dir'])) == 0:
         raise CG.CompileError("No submit file")
 
+    # 检查和编译提交文件
     source_code = os.path.join(config["submit_dir"], "*.ml")
     compile_cmd = config['compile_cmd'].format(
         exec_src=config['exec_src'],
@@ -20,7 +21,7 @@ def prework(job: gg.Job):
     if compile_result.returncode != 0:
         raise CG.CompileError(compile_result.stdout + '\n' + compile_result.stderr)
 
-    # 动态计算测试用例数量
+    # 计算测试用例数量
     testcase_dir = Env()["testcase_dir"]
     if "testcase_num" not in config or config["testcase_num"] == 0:
         config["testcase_num"] = len([f for f in os.listdir(testcase_dir) if f.startswith("input") and f.endswith(".txt")])
@@ -41,6 +42,6 @@ def prework(job: gg.Job):
             name=str(i),
             input_src=input_file,
             output_src=output_file,
-            score=10
+            score=100 / config['testcase_num']
         )
     job.set_testcases(testcases)
